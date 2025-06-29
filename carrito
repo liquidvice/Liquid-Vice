@@ -1,0 +1,121 @@
+index.html
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Liquid Vice</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h1 { text-align: center; }
+    .productos { display: flex; flex-wrap: wrap; gap: 10px; }
+    .producto { border: 1px solid #ccc; padding: 10px; width: 200px; }
+    .producto button { margin-top: 5px; width: 100%; }
+    #carrito { margin-top: 30px; border-top: 2px solid #000; padding-top: 10px; }
+    ul { list-style:none; padding:0; }
+    li { margin-bottom:5px; }
+    .cant-botones { margin:0 5px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h1>Liquid Vice</h1>
+  <div class="productos" id="productos"></div>
+  <div id="carrito">
+    <h2>Carrito</h2>
+    <ul id="lista-carrito"></ul>
+    <p><strong>Total: $<span id="total">0</span></strong></p>
+    <button onclick="vaciarCarrito()">Vaciar carrito</button>
+    <button onclick="finalizarCompra()">Finalizar compra</button>
+  </div>
+  <script>
+    const productos = [
+      { nombre:"Speed xl 500ml", precio:150 },
+      { nombre:"Speed xl 500ml x6", precio:850 },
+      { nombre:"Sprite 1.75L", precio:180 },
+      { nombre:"Coca cola 2.25L", precio:200 },
+      { nombre:"Coca cola 2.25L 2 unidades", precio:380 },
+      { nombre:"Sprite 1.75L 2 unidades", precio:340 },
+      { nombre:"Coca cola 1.5L", precio:160 },
+      { nombre:"Coca cola 1.5L 2 unidades", precio:310 },
+      { nombre:"Paso De Los Toros 1.5L", precio:170 },
+      { nombre:"Paso De Los Toros 1.5L 2 unidades", precio:330 },
+      { nombre:"Botella Fernet Branca 750ml", precio:1200 },
+      { nombre:"Botella Gancia 1L", precio:800 },
+      { nombre:"Fernet Branca 750ml & Botella Gancia 1L", precio:1900 },
+      { nombre:"Fernet Branca 750ml 2 Unidades", precio:2300 },
+      { nombre:"SKYY 750ml", precio:1400 },
+      { nombre:"Smirnoff Raspberry 750ml", precio:1300 },
+      { nombre:"Smirnoff Green Apple 750ml", precio:1300 },
+      { nombre:"Smirnoff Watermelon 750ml", precio:1300 },
+      { nombre:"Smirnoff Tropical Fruits 750ml", precio:1300 },
+      { nombre:"Gin Heredero 700ml", precio:1600 },
+      { nombre:"Gin Bombay 750ml", precio:1800 },
+      { nombre:"Baggio Multifruta 1L", precio:220 },
+      { nombre:"Baggio Naranja 1L", precio:220 },
+      { nombre:"Baggio Durazno 1L", precio:220 }
+    ];
+    let carrito = [];
+    function cargarProductos() {
+      const div = document.getElementById('productos');
+      productos.forEach((p,i)=>{
+        const card = document.createElement('div');
+        card.className = 'producto';
+        card.innerHTML = `<h3>${p.nombre}</h3><p>$${p.precio}</p>`;
+        const btn = document.createElement('button');
+        btn.textContent = 'Agregar al carrito';
+        btn.onclick = ()=> agregarAlCarrito(i);
+        card.appendChild(btn);
+        div.appendChild(card);
+      });
+    }
+    function agregarAlCarrito(idx) {
+      const prod = productos[idx];
+      const item = carrito.find(x=>x.nombre===prod.nombre);
+      if(item) item.cantidad++;
+      else carrito.push({ ...prod, cantidad:1 });
+      actualizarCarrito();
+    }
+    function actualizarCarrito() {
+      const lista = document.getElementById('lista-carrito');
+      const totalEl = document.getElementById('total');
+      lista.innerHTML = '';
+      let total = 0;
+      carrito.forEach((item,i)=>{
+        total += item.precio * item.cantidad;
+        const li = document.createElement('li');
+        li.textContent = `${item.nombre} — $${item.precio} x ${item.cantidad} = $${item.precio*item.cantidad}`;
+        const btnMenos = document.createElement('span');
+        btnMenos.textContent = '−'; btnMenos.className='cant-botones';
+        btnMenos.onclick = ()=> cambiarCantidad(i,-1);
+        const btnMas  = document.createElement('span');
+        btnMas.textContent = '+'; btnMas.className='cant-botones';
+        btnMas.onclick = ()=> cambiarCantidad(i,1);
+        li.append(' ', btnMenos, btnMas);
+        const btnDel = document.createElement('span');
+        btnDel.textContent = ' ✖'; btnDel.style.cursor='pointer';
+        btnDel.onclick = ()=> eliminarProducto(i);
+        li.appendChild(btnDel);
+        lista.appendChild(li);
+      });
+      totalEl.textContent = total;
+    }
+    function cambiarCantidad(i,inc) {
+      carrito[i].cantidad += inc;
+      if(carrito[i].cantidad<1) carrito.splice(i,1);
+      actualizarCarrito();
+    }
+    function eliminarProducto(i) {
+      carrito.splice(i,1);
+      actualizarCarrito();
+    }
+    function vaciarCarrito() {
+      carrito = [];
+      actualizarCarrito();
+    }
+    function finalizarCompra() {
+      alert('¡Gracias por tu compra!');
+      vaciarCarrito();
+    }
+    cargarProductos();
+  </script>
+</body>
+</html>
+
