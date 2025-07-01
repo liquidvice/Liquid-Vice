@@ -2,103 +2,148 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Liquid Vice</title>
+  <title>Liquid Vice - Carrito</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f3f3f3;
-      margin: 20px;
+      margin: 0;
+      padding: 0;
     }
+
     h1 {
       text-align: center;
+      margin-top: 20px;
     }
-    .producto, .carrito {
+
+    .producto {
       border: 1px solid #ccc;
       background: white;
       padding: 10px;
       margin: 10px;
       border-radius: 8px;
+      width: 250px;
+      text-align: center;
     }
+
+    .producto input {
+      width: 60px;
+      padding: 5px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
     .producto button {
       margin-top: 10px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
+
+    .producto button:hover {
+      background-color: #34495e;
+    }
+
     .carrito {
-      width: 100%;
-      max-width: 500px;
-      margin: 20px auto;
-      box-shadow: 0 0 10px #aaa;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: white;
+      padding: 10px 20px;
+      border-bottom: 2px solid #ccc;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
+
     .total {
       font-weight: bold;
     }
+
     .boton {
-      margin: 5px 0;
+      margin: 5px 5px 5px 0;
+      background-color: #27ae60;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
     }
 
-    #contenedor-principal {
+    .boton:hover {
+      background-color: #219150;
+    }
+
+    #productos {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 10px;
     }
 
-    @media (min-width: 768px) {
-      #contenedor-principal {
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 20px;
-      }
-      #productos {
-        flex: 2;
-      }
-      #carrito {
-        flex: 1;
-        position: sticky;
-        top: 20px;
-        max-width: 300px;
-      }
+    #cantidad-carrito {
+      font-weight: bold;
+      color: gray;
+      transition: color 0.3s ease;
+    }
+
+    #cantidad-carrito.activo {
+      color: green;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      25% { transform: scale(1.3); }
+      50% { transform: scale(1); }
+    }
+
+    #cantidad-carrito.animado {
+      animation: pop 0.3s ease;
     }
   </style>
 </head>
 <body>
   <h1>Liquid Vice</h1>
 
-  <div id="contenedor-principal">
-    <div id="productos"></div>
-
-    <div class="carrito" id="carrito">
-      <h2>Carrito</h2>
-      <div id="items"></div>
-      <p class="total">Total: $<span id="total">0</span></p>
-      <button class="boton" onclick="vaciarCarrito()">Vaciar carrito</button>
-      <button class="boton" onclick="finalizarCompra()">Finalizar compra</button>
-    </div>
+  <div id="carrito" class="carrito">
+    <h2>Carrito (<span id="cantidad-carrito">0</span>)</h2>
+    <div id="items"></div>
+    <p class="total">Total: $<span id="total">0</span></p>
+    <button class="boton" onclick="vaciarCarrito()">Vaciar carrito</button>
+    <button class="boton" onclick="finalizarCompra()">Finalizar compra</button>
   </div>
+
+  <div id="productos"></div>
 
   <script>
     const productos = [
-      { nombre: "Speed xl 500ml", precio: 1950 },
-      { nombre: "Speed xl 500ml x6", precio: 9750 },
-      { nombre: "Sprite 1.75L", precio: 2000 },
-      { nombre: "Coca cola 2.25L", precio: 3200 },
-      { nombre: "Coca cola 2.25L 2 unidades", precio: 6000 },
-      { nombre: "Sprite 1.75L 2 unidades", precio: 3800 },
-      { nombre: "Coca cola 1.5L", precio: 2200 },
-      { nombre: "Coca cola 1.5L 2 unidades", precio: 4000 },
-      { nombre: "Paso De Los Toros 1.5L", precio: 2100 },
-      { nombre: "Paso De Los Toros 1.5L 2 unidades", precio: 4000 },
-      { nombre: "Botella Fernet Branca 750ml", precio: 10200 },
-      { nombre: "Botella Gancia 1L", precio: 6000 },
-      { nombre: "Fernet Branca 750ml & Botella Gancia 1L", precio: 15700 },
-      { nombre: "Fernet Branca 750ml 2 Unidades", precio: 18900 },
-      { nombre: "SKYY 750ml", precio: 5900 },
-      { nombre: "Smirnoff Raspberry 750ml", precio: 7000 },
-      { nombre: "Smirnoff Green Apple 750ml", precio: 7000 },
-      { nombre: "Smirnoff Watermelon 750ml", precio: 7000 },
-      { nombre: "Smirnoff Tropical Fruits 750ml", precio: 7000 },
-      { nombre: "Gin Heredero 700ml", precio: 10500 },
-      { nombre: "Gin Bombay 750ml", precio: 23000 },
-      { nombre: "Baggio Multifruta 1L", precio: 1350 },
-      { nombre: "Baggio Naranja 1L", precio: 1350 },
-      { nombre: "Baggio Durazno 1L", precio: 1350 }
+      { nombre: "Speed xl 500ml", precio: 150 },
+      { nombre: "Speed xl 500ml x6", precio: 850 },
+      { nombre: "Sprite 1.75L", precio: 300 },
+      { nombre: "Coca cola 2.25L", precio: 350 },
+      { nombre: "Coca cola 2.25L 2 unidades", precio: 700 },
+      { nombre: "Sprite 1.75L 2 unidades", precio: 600 },
+      { nombre: "Coca cola 1.5L", precio: 280 },
+      { nombre: "Coca cola 1.5L 2 unidades", precio: 560 },
+      { nombre: "Paso De Los Toros 1.5L", precio: 250 },
+      { nombre: "Paso De Los Toros 1.5L 2 unidades", precio: 500 },
+      { nombre: "Botella Fernet Branca 750ml", precio: 1400 },
+      { nombre: "Botella Gancia 1L", precio: 1000 },
+      { nombre: "Fernet Branca 750ml & Botella Gancia 1L", precio: 2300 },
+      { nombre: "Fernet Branca 750ml 2 Unidades", precio: 2800 },
+      { nombre: "SKYY 750ml", precio: 1600 },
+      { nombre: "Smirnoff Raspberry 750ml", precio: 1500 },
+      { nombre: "Smirnoff Green Apple 750ml", precio: 1500 },
+      { nombre: "Smirnoff Watermelon 750ml", precio: 1500 },
+      { nombre: "Smirnoff Tropical Fruits 750ml", precio: 1500 },
+      { nombre: "Gin Heredero 700ml", precio: 1300 },
+      { nombre: "Gin Bombay 750ml", precio: 1900 },
+      { nombre: "Baggio Multifruta 1L", precio: 250 },
+      { nombre: "Baggio Naranja 1L", precio: 250 },
+      { nombre: "Baggio Durazno 1L", precio: 250 }
     ];
 
     const carrito = [];
@@ -108,18 +153,27 @@
       productos.forEach((p, i) => {
         const div = document.createElement("div");
         div.className = "producto";
-        div.innerHTML = `<strong>${p.nombre}</strong><br>Precio: $${p.precio}<br><button onclick="agregar(${i})">Agregar al carrito</button>`;
+        div.innerHTML = `
+          <strong>${p.nombre}</strong><br>
+          Precio: $${p.precio}<br>
+          <input type="number" id="cantidad-${i}" min="1" value="1"><br>
+          <button onclick="agregar(${i})">Pedir</button>
+        `;
         contenedor.appendChild(div);
       });
     }
 
     function agregar(i) {
+      const cantidadInput = document.getElementById(`cantidad-${i}`);
+      let cantidad = parseInt(cantidadInput.value);
+      if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
+
       const producto = productos[i];
       const existente = carrito.find(item => item.nombre === producto.nombre);
       if (existente) {
-        existente.cantidad += 1;
+        existente.cantidad += cantidad;
       } else {
-        carrito.push({ ...producto, cantidad: 1 });
+        carrito.push({ ...producto, cantidad });
       }
       actualizarCarrito();
     }
@@ -128,13 +182,33 @@
       const items = document.getElementById("items");
       items.innerHTML = "";
       let total = 0;
+      let cantidadTotal = 0;
+
       carrito.forEach((p, i) => {
         total += p.precio * p.cantidad;
+        cantidadTotal += p.cantidad;
         const div = document.createElement("div");
-        div.innerHTML = `${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad} <button onclick="eliminar(${i})">❌</button>`;
+        div.innerHTML = `
+          ${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad}
+          <button onclick="eliminar(${i})">❌</button>
+        `;
         items.appendChild(div);
       });
+
       document.getElementById("total").textContent = total;
+
+      const cantidadSpan = document.getElementById("cantidad-carrito");
+      cantidadSpan.textContent = cantidadTotal;
+
+      if (cantidadTotal > 0) {
+        cantidadSpan.classList.add("activo");
+      } else {
+        cantidadSpan.classList.remove("activo");
+      }
+
+      cantidadSpan.classList.remove("animado");
+      void cantidadSpan.offsetWidth;
+      cantidadSpan.classList.add("animado");
     }
 
     function eliminar(i) {
@@ -148,8 +222,23 @@
     }
 
     function finalizarCompra() {
-      alert("¡Gracias por su compra!");
-      vaciarCarrito();
+      if (carrito.length === 0) {
+        alert("El carrito está vacío.");
+        return;
+      }
+
+      let mensaje = "*¡Hola! Quiero hacer un pedido:*\n\n";
+      carrito.forEach(p => {
+        mensaje += `• ${p.nombre} x${p.cantidad} = $${p.precio * p.cantidad}\n`;
+      });
+
+      let total = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+      mensaje += `\n*Total: $${total}*`;
+
+      const telefono = "5491123456789"; // ← Reemplazalo por tu número real
+      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+
+      window.open(url, "_blank");
     }
 
     mostrarProductos();
