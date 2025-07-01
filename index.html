@@ -60,10 +60,10 @@
       background-color: #34495e;
     }
 
-    /* Carrito fijo arriba a la derecha */
+    /* Carrito fijo arriba a la derecha, justo debajo del botón */
     .carrito {
       position: fixed;
-      top: 60px; /* debajo del botón */
+      top: 60px; /* Altura justo debajo del botón */
       right: 15px;
       width: 320px;
       max-height: 80vh;
@@ -96,7 +96,7 @@
     }
 
     #productos {
-      margin-top: 100px; /* para que no quede tapado por el carrito fijo */
+      margin-top: 100px; /* Deja espacio para que no quede tapado por el carrito */
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -340,8 +340,7 @@
 
     function toggleCarrito() {
       const carritoDiv = document.getElementById("carrito");
-      const style = window.getComputedStyle(carritoDiv);
-      if (style.display === "none") {
+      if (carritoDiv.style.display === "none" || carritoDiv.style.display === "") {
         carritoDiv.style.display = "block";
       } else {
         carritoDiv.style.display = "none";
