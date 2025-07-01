@@ -60,13 +60,14 @@
       background-color: #34495e;
     }
 
-    /* Carrito fijo arriba a la derecha, justo debajo del botón */
+    /* Carrito fijo arriba a la derecha y compacto */
     .carrito {
       position: fixed;
-      top: 60px; /* Altura justo debajo del botón */
+      top: 60px;
       right: 15px;
-      width: 320px;
-      max-height: 80vh;
+      width: 90%;
+      max-width: 320px;
+      max-height: 70vh;
       overflow-y: auto;
       background: white;
       padding: 20px;
@@ -96,7 +97,7 @@
     }
 
     #productos {
-      margin-top: 100px; /* Deja espacio para que no quede tapado por el carrito */
+      margin-top: 100px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -145,11 +146,34 @@
     #toggle-carrito:hover {
       background: #219150;
     }
+
+    /* Responsivo para móviles */
+    @media (max-width: 480px) {
+      .carrito {
+        width: 95%;
+        right: 2.5%;
+        top: 65px;
+        padding: 15px;
+        font-size: 14px;
+      }
+
+      #toggle-carrito {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+
+      .producto {
+        width: 90%;
+      }
+
+      .producto input {
+        width: 50px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Botón flotante 🛒 -->
   <button id="toggle-carrito" onclick="toggleCarrito()">🛒 (0)</button>
 
   <h1>Liquid Vice</h1>
@@ -327,7 +351,7 @@
       let total = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
       mensaje += `\n*Total: $${total}*`;
 
-      const telefono = "5493492247741"; // Reemplazalo con tu número real
+      const telefono = "5493492247741";
       const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 
       window.open(url, "_blank");
@@ -340,11 +364,7 @@
 
     function toggleCarrito() {
       const carritoDiv = document.getElementById("carrito");
-      if (carritoDiv.style.display === "none" || carritoDiv.style.display === "") {
-        carritoDiv.style.display = "block";
-      } else {
-        carritoDiv.style.display = "none";
-      }
+      carritoDiv.style.display = carritoDiv.style.display === "none" || carritoDiv.style.display === "" ? "block" : "none";
     }
 
     mostrarProductos();
