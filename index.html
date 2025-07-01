@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Liquid Vice - Carrito</title>
   <style>
     body {
@@ -60,14 +60,20 @@
       background-color: #34495e;
     }
 
+    /* Carrito fijo arriba a la derecha */
     .carrito {
+      position: fixed;
+      top: 60px; /* debajo del botón */
+      right: 15px;
+      width: 320px;
+      max-height: 80vh;
+      overflow-y: auto;
       background: white;
       padding: 20px;
-      margin: 20px auto;
-      max-width: 500px;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       border-radius: 10px;
       display: none;
+      z-index: 1000;
     }
 
     .total {
@@ -90,6 +96,7 @@
     }
 
     #productos {
+      margin-top: 100px; /* para que no quede tapado por el carrito fijo */
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -132,7 +139,7 @@
       font-size: 16px;
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-      z-index: 999;
+      z-index: 1100;
     }
 
     #toggle-carrito:hover {
@@ -345,4 +352,3 @@
   </script>
 </body>
 </html>
-
