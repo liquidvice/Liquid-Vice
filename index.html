@@ -16,6 +16,17 @@
       margin-top: 20px;
     }
 
+    #buscador {
+      margin: 20px auto;
+      display: block;
+      padding: 10px;
+      font-size: 16px;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
     .producto {
       border: 1px solid #ccc;
       background: white;
@@ -90,14 +101,35 @@
       color: gray;
     }
 
-    h3 {
-      margin-top: 20px;
-      border-bottom: 1px solid #ccc;
+    h2, h3 {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .categoria-section {
+      width: 100%;
+    }
+
+    .categoria-titulo {
+      width: 100%;
+      text-align: center;
+      margin: 30px 0 10px;
+      font-size: 20px;
+      font-weight: bold;
+      border-bottom: 2px solid #ccc;
+    }
+
+    .categoria-productos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
     }
   </style>
 </head>
 <body>
   <h1>Liquid Vice</h1>
+
+  <input type="text" id="buscador" placeholder="Buscar producto..." oninput="filtrarProductos()">
 
   <div id="productos"></div>
 
@@ -111,47 +143,81 @@
 
   <script>
     const productos = [
-      { nombre: "Speed xl 500ml", precio: 150, categoria: "ENERGIZANTES" },
-      { nombre: "Speed xl 500ml x6", precio: 850, categoria: "ENERGIZANTES" },
-      { nombre: "Sprite 1.75L", precio: 300, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 2.25L", precio: 350, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 2.25L 2 unidades", precio: 700, categoria: "GASEOSAS" },
-      { nombre: "Sprite 1.75L 2 unidades", precio: 600, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 1.5L", precio: 280, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 1.5L 2 unidades", precio: 560, categoria: "GASEOSAS" },
-      { nombre: "Paso De Los Toros 1.5L", precio: 250, categoria: "GASEOSAS" },
-      { nombre: "Paso De Los Toros 1.5L 2 unidades", precio: 500, categoria: "GASEOSAS" },
-      { nombre: "Botella Fernet Branca 750ml", precio: 1400, categoria: "APERITIVOS" },
-      { nombre: "Botella Gancia 1L", precio: 1000, categoria: "APERITIVOS" },
-      { nombre: "Fernet Branca 750ml & Botella Gancia 1L", precio: 2300, categoria: "APERITIVOS" },
-      { nombre: "Fernet Branca 750ml 2 Unidades", precio: 2800, categoria: "APERITIVOS" },
-      { nombre: "SKYY 750ml", precio: 1600, categoria: "VODKA" },
-      { nombre: "Smirnoff Raspberry 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Smirnoff Green Apple 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Smirnoff Watermelon 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Smirnoff Tropical Fruits 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Gin Heredero 700ml", precio: 1300, categoria: "GIN" },
-      { nombre: "Gin Bombay 750ml", precio: 1900, categoria: "GIN" },
-      { nombre: "Baggio Multifruta 1L", precio: 250, categoria: "JUGOS" },
-      { nombre: "Baggio Naranja 1L", precio: 250, categoria: "JUGOS" },
-      { nombre: "Baggio Durazno 1L", precio: 250, categoria: "JUGOS" }
+      { nombre: "Speed xl 500ml", precio: 1950, categoria: "ENERGIZANTES" },
+      { nombre: "Speed xl 500ml x6", precio: 9750, categoria: "ENERGIZANTES" },
+      { nombre: "Sprite 1.75L", precio: 2000, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 2.25L", precio: 3200, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 2.25L 2 unidades", precio: 6000, categoria: "GASEOSAS" },
+      { nombre: "Sprite 1.75L 2 unidades", precio: 3800, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 1.5L", precio: 2200, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 1.5L 2 unidades", precio: 4000, categoria: "GASEOSAS" },
+      { nombre: "Paso De Los Toros 1.5L", precio: 2100, categoria: "GASEOSAS" },
+      { nombre: "Paso De Los Toros 1.5L 2 unidades", precio: 4000, categoria: "GASEOSAS" },
+      { nombre: "Botella Fernet Branca 750ml", precio: 10200, categoria: "APERITIVOS" },
+      { nombre: "Botella Gancia 1L", precio: 6000, categoria: "APERITIVOS" },
+      { nombre: "Fernet Branca 750ml & Botella Gancia 1L", precio: 15700, categoria: "APERITIVOS" },
+      { nombre: "Fernet Branca 750ml 2 Unidades", precio: 18000, categoria: "APERITIVOS" },
+      { nombre: "SKYY 750ml", precio: 5900, categoria: "VODKA" },
+      { nombre: "Smirnoff Raspberry 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Smirnoff Green Apple 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Smirnoff Watermelon 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Smirnoff Tropical Fruits 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Gin Heredero 700ml", precio: 10500, categoria: "GIN" },
+      { nombre: "Gin Bombay 750ml", precio: 23000, categoria: "GIN" },
+      { nombre: "Baggio Multifruta 1L", precio: 1350, categoria: "JUGOS" },
+      { nombre: "Baggio Naranja 1L", precio: 1350, categoria: "JUGOS" },
+      { nombre: "Baggio Durazno 1L", precio: 1350, categoria: "JUGOS" }
     ];
 
     const carrito = [];
 
-    function mostrarProductos() {
+    function mostrarProductos(filtro = "") {
       const contenedor = document.getElementById("productos");
+      contenedor.innerHTML = "";
+
+      const categorias = {};
+
       productos.forEach((p, i) => {
-        const div = document.createElement("div");
-        div.className = "producto";
-        div.innerHTML = `
-          <strong>${p.nombre}</strong><br>
-          Precio: $${p.precio}<br>
-          <input type="number" id="cantidad-${i}" min="1" value="1"><br>
-          <button onclick="agregar(${i})">Pedir</button>
-        `;
-        contenedor.appendChild(div);
+        if (!categorias[p.categoria]) {
+          categorias[p.categoria] = [];
+        }
+        categorias[p.categoria].push({ ...p, index: i });
       });
+
+      for (const cat in categorias) {
+        const productosFiltrados = categorias[cat].filter(p =>
+          p.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+          cat.toLowerCase().includes(filtro.toLowerCase())
+        );
+
+        if (productosFiltrados.length === 0) continue;
+
+        const seccion = document.createElement("div");
+        seccion.className = "categoria-section";
+
+        const titulo = document.createElement("div");
+        titulo.className = "categoria-titulo";
+        titulo.textContent = cat;
+
+        const lista = document.createElement("div");
+        lista.className = "categoria-productos";
+
+        productosFiltrados.forEach(p => {
+          const div = document.createElement("div");
+          div.className = "producto";
+          div.innerHTML = `
+            <strong>${p.nombre}</strong><br>
+            Precio: $${p.precio}<br>
+            <input type="number" id="cantidad-${p.index}" min="1" value="1"><br>
+            <button onclick="agregar(${p.index})">Pedir</button>
+          `;
+          lista.appendChild(div);
+        });
+
+        seccion.appendChild(titulo);
+        seccion.appendChild(lista);
+        contenedor.appendChild(seccion);
+      }
     }
 
     function agregar(i) {
@@ -191,7 +257,7 @@
         h3.textContent = cat;
         items.appendChild(h3);
 
-        categorias[cat].forEach((p, i) => {
+        categorias[cat].forEach(p => {
           const div = document.createElement("div");
           div.innerHTML = `
             ${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad}
@@ -232,10 +298,15 @@
       let total = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
       mensaje += `\n*Total: $${total}*`;
 
-      const telefono = "5493492247741"; // ← PONÉ TU NÚMERO AQUÍ
+      const telefono = "5493492247741"; // CAMBIÁ ESTO POR TU NÚMERO
       const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 
       window.open(url, "_blank");
+    }
+
+    function filtrarProductos() {
+      const texto = document.getElementById("buscador").value;
+      mostrarProductos(texto);
     }
 
     mostrarProductos();
