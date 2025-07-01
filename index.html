@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Liquid Vice - Carrito</title>
+  <title>Carrito de compras- Carrito</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -310,7 +310,7 @@
           const div = document.createElement("div");
           div.innerHTML = `
             ${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad}
-            <button onclick="eliminarPorNombre('${p.nombre}')">❌</button>
+            <button onclick="eliminarPorNombre('${p.nombre}')">🚫</button>
           `;
           items.appendChild(div);
         });
