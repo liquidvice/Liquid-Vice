@@ -208,7 +208,7 @@
       { nombre: "Fernet Branca 750ml & Botella Gancia 1L", precio: 15700, categoria: "APERITIVOS" },
       { nombre: "Fernet Branca 750ml 2 Unidades", precio: 18000, categoria: "APERITIVOS" },
       { nombre: "SKYY 750ml", precio: 5900, categoria: "VODKA" },
-      { nombre: "SKYY Durazno 750ml", precio: 6800, categoria: "NUESTRA ESPECIALIDAD" },
+      { nombre: "SKYY Durazno 750ml", precio: 6800, categoria: "EL MAS VENDIDO" },
       { nombre: "Smirnoff Raspberry 750ml", precio: 7000, categoria: "VODKA" },
       { nombre: "Smirnoff Green Apple 750ml", precio: 7000, categoria: "VODKA" },
       { nombre: "Smirnoff Watermelon 750ml", precio: 7000, categoria: "VODKA" },
@@ -345,7 +345,7 @@
         return;
       }
 
-      let mensaje = "*¡Hola! Quiero realizar este pedido:*\n\n", "* Mi dirección es:*\n\n";
+      let mensaje = "*¡Hola! Quiero realizar este pedido:*\n\n",
       carrito.forEach(p => {
         mensaje += `• ${p.nombre} x${p.cantidad} = $${p.precio * p.cantidad}\n`;
       });
