@@ -345,7 +345,8 @@
         return;
       }
 
-      let mensaje = "*¡Hola! Quiero hacer un pedido:*\n\n";
+      let mensaje = "*¡Hola! Quiero realizar este pedido:*\n\n";
+       let mensaje = "* Mi dirección es:*\n\n";
       carrito.forEach(p => {
         mensaje += `• ${p.nombre} x${p.cantidad} = $${p.precio * p.cantidad}\n`;
       });
