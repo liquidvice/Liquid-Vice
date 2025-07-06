@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Liquid Vice</title>
+  <meta charset="UTF-8">
+  <title>Liquid Vice - Carrito</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -138,20 +138,11 @@
     #toggle-carrito:hover {
       background: #219150;
     }
-
-    @keyframes parpadeo {
-      0% { background-color: #27ae60; }
-      50% { background-color: #2ecc71; }
-      100% { background-color: #27ae60; }
-    }
-
-    #toggle-carrito.animar {
-      animation: parpadeo 0.6s ease;
-    }
   </style>
 </head>
 <body>
 
+  <!-- Botón flotante 🛒 -->
   <button id="toggle-carrito" onclick="toggleCarrito()">🛒 (0)</button>
 
   <h1>Liquid Vice</h1>
@@ -197,58 +188,110 @@
       { nombre: "Baggio Naranja 1L", precio: 1350, categoria: "JUGOS" },
       { nombre: "Baggio Durazno 1L", precio: 1350, categoria: "JUGOS" }
     ];
-
     const carrito = [];
 
-    function toggleCarrito() {
-      const carritoDiv = document.getElementById("carrito");
-      const visible = carritoDiv.style.display === "block" || window.getComputedStyle(carritoDiv).display === "block";
-      carritoDiv.style.display = visible ? "none" : "block";
+    function mostrarProductos(filtro = "") {
+      const contenedor = document.getElementById("productos");
+      contenedor.innerHTML = "";
+
+      const categorias = {};
+
+      productos.forEach((p, i) => {
+        if (!categorias[p.categoria]) {
+          categorias[p.categoria] = [];
+        }
+        categorias[p.categoria].push({ ...p, index: i });
+      });
+
+      for (const cat in categorias) {
+        const productosFiltrados = categorias[cat].filter(p =>
+          p.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+          cat.toLowerCase().includes(filtro.toLowerCase())
+        );
+
+        if (productosFiltrados.length === 0) continue;
+
+        const seccion = document.createElement("div");
+        seccion.className = "categoria-section";
+
+        const titulo = document.createElement("div");
+        titulo.className = "categoria-titulo";
+        titulo.textContent = cat;
+
+        const lista = document.createElement("div");
+        lista.className = "categoria-productos";
+
+        productosFiltrados.forEach(p => {
+          const div = document.createElement("div");
+          div.className = "producto";
+          div.innerHTML = `
+            <strong>${p.nombre}</strong><br>
+            Precio: $${p.precio}<br>
+            <input type="number" id="cantidad-${p.index}" min="1" value="1"><br>
+            <button onclick="agregar(${p.index})">Pedir</button>
+          `;
+          lista.appendChild(div);
+        });
+
+        seccion.appendChild(titulo);
+        seccion.appendChild(lista);
+        contenedor.appendChild(seccion);
+      }
     }
 
     function agregar(i) {
-      if (navigator.vibrate) navigator.vibrate(50);
+      const cantidadInput = document.getElementById(`cantidad-${i}`);
+      let cantidad = parseInt(cantidadInput.value);
+      if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
+
       const producto = productos[i];
-      const existente = carrito.find(p => p.nombre === producto.nombre);
+      const existente = carrito.find(item => item.nombre === producto.nombre);
       if (existente) {
-        existente.cantidad += 1;
+        existente.cantidad += cantidad;
       } else {
-        carrito.push({ ...producto, cantidad: 1 });
+        carrito.push({ ...producto, cantidad });
       }
       actualizarCarrito();
     }
 
     function actualizarCarrito() {
       const items = document.getElementById("items");
-      const toggle = document.getElementById("toggle-carrito");
       items.innerHTML = "";
       let total = 0;
       let cantidadTotal = 0;
-      const categorias = {};
 
+      const categorias = {};
       carrito.forEach(p => {
         total += p.precio * p.cantidad;
         cantidadTotal += p.cantidad;
-        if (!categorias[p.categoria]) categorias[p.categoria] = [];
+
+        if (!categorias[p.categoria]) {
+          categorias[p.categoria] = [];
+        }
         categorias[p.categoria].push(p);
       });
 
       for (const cat in categorias) {
-        const titulo = document.createElement("h3");
-        titulo.textContent = cat;
-        items.appendChild(titulo);
+        const h3 = document.createElement("h3");
+        h3.textContent = cat;
+        items.appendChild(h3);
 
         categorias[cat].forEach(p => {
           const div = document.createElement("div");
-          div.innerHTML = `${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad} <button onclick="eliminarPorNombre('${p.nombre}')">❌</button>`;
+          div.innerHTML = `
+            ${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad}
+            <button onclick="eliminarPorNombre('${p.nombre}')">❌</button>
+          `;
           items.appendChild(div);
         });
       }
 
       document.getElementById("total").textContent = total;
-      toggle.textContent = `🛒 (${cantidadTotal})`;
-      toggle.classList.add("animar");
-      setTimeout(() => toggle.classList.remove("animar"), 600);
+      actualizarBotonFlotante(cantidadTotal);
+    }
+
+    function actualizarBotonFlotante(cantidad) {
+      document.getElementById("toggle-carrito").textContent = `🛒 (${cantidad})`;
     }
 
     function eliminarPorNombre(nombre) {
@@ -265,67 +308,37 @@
     }
 
     function finalizarCompra() {
-      const texto = encodeURIComponent("Hola, quiero hacer un pedido:\n" + carrito.map(p => `${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad}`).join("\n") + `\nTotal: $${carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0)}`);
-      window.open(`https://wa.me/5493492247741?text=${texto}`);
-      vaciarCarrito();
-      toggleCarrito();
-    }
+      if (carrito.length === 0) {
+        alert("El carrito está vacío.");
+        return;
+      }
 
-    function mostrarProductos() {
-      const contenedor = document.getElementById("productos");
-      const categorias = {};
-      productos.forEach((p, i) => {
-        if (!categorias[p.categoria]) categorias[p.categoria] = [];
-        categorias[p.categoria].push({ ...p, index: i });
+      let mensaje = "*¡Hola! Quiero hacer un pedido:*\n\n";
+      carrito.forEach(p => {
+        mensaje += `• ${p.nombre} x${p.cantidad} = $${p.precio * p.cantidad}\n`;
       });
 
-      for (const cat in categorias) {
-        const titulo = document.createElement("h3");
-        titulo.textContent = cat;
-        contenedor.appendChild(titulo);
+      let total = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+      mensaje += `\n*Total: $${total}*`;
 
-        const fila = document.createElement("div");
-        fila.className = "categoria-productos";
+      const telefono = "5493492247741"; // Reemplazalo con tu número real
+      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 
-        categorias[cat].forEach(p => {
-          const div = document.createElement("div");
-          div.className = "producto";
-          div.innerHTML = `<strong>${p.nombre}</strong><br>Precio: $${p.precio}<br><button onclick="agregar(${p.index})">Agregar</button>`;
-          fila.appendChild(div);
-        });
-
-        contenedor.appendChild(fila);
-      }
+      window.open(url, "_blank");
     }
 
     function filtrarProductos() {
-      const filtro = document.getElementById("buscador").value.toLowerCase();
-      const contenedor = document.getElementById("productos");
-      contenedor.innerHTML = "";
-      productos
-        .map((p, i) => ({ ...p, index: i }))
-        .filter(p => p.nombre.toLowerCase().includes(filtro))
-        .forEach(p => {
-          const div = document.createElement("div");
-          div.className = "producto";
-          div.innerHTML = `<strong>${p.nombre}</strong><br>Precio: $${p.precio}<br><button onclick="agregar(${p.index})">Agregar</button>`;
-          contenedor.appendChild(div);
-        });
+      const texto = document.getElementById("buscador").value;
+      mostrarProductos(texto);
     }
 
-    document.addEventListener("click", function(event) {
+    function toggleCarrito() {
       const carritoDiv = document.getElementById("carrito");
-      const botonToggle = document.getElementById("toggle-carrito");
-      if (
-        carritoDiv.style.display === "block" &&
-        !carritoDiv.contains(event.target) &&
-        !botonToggle.contains(event.target)
-      ) {
-        carritoDiv.style.display = "none";
-      }
-    });
+      carritoDiv.style.display = carritoDiv.style.display === "none" ? "block" : "none";
+    }
 
     mostrarProductos();
   </script>
 </body>
 </html>
+
