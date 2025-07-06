@@ -200,115 +200,55 @@
 
     const carrito = [];
 
-    function mostrarProductos(filtro = "") {
-      const contenedor = document.getElementById("productos");
-      contenedor.innerHTML = "";
-
-      const categorias = {};
-
-      productos.forEach((p, i) => {
-        if (!categorias[p.categoria]) {
-          categorias[p.categoria] = [];
-        }
-        categorias[p.categoria].push({ ...p, index: i });
-      });
-
-      for (const cat in categorias) {
-        const productosFiltrados = categorias[cat].filter(p =>
-          p.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-          cat.toLowerCase().includes(filtro.toLowerCase())
-        );
-
-        if (productosFiltrados.length === 0) continue;
-
-        const seccion = document.createElement("div");
-        seccion.className = "categoria-section";
-
-        const titulo = document.createElement("div");
-        titulo.className = "categoria-titulo";
-        titulo.textContent = cat;
-
-        const lista = document.createElement("div");
-        lista.className = "categoria-productos";
-
-        productosFiltrados.forEach(p => {
-          const div = document.createElement("div");
-          div.className = "producto";
-          div.innerHTML = `
-            <strong>${p.nombre}</strong><br>
-            Precio: $${p.precio}<br>
-            <input type="number" id="cantidad-${p.index}" min="1" value="1"><br>
-            <button onclick="agregar(${p.index})">Pedir</button>
-          `;
-          lista.appendChild(div);
-        });
-
-        seccion.appendChild(titulo);
-        seccion.appendChild(lista);
-        contenedor.appendChild(seccion);
-      }
+    function toggleCarrito() {
+      const carritoDiv = document.getElementById("carrito");
+      const visible = carritoDiv.style.display === "block" || window.getComputedStyle(carritoDiv).display === "block";
+      carritoDiv.style.display = visible ? "none" : "block";
     }
 
     function agregar(i) {
-      const cantidadInput = document.getElementById(`cantidad-${i}`);
-      let cantidad = parseInt(cantidadInput.value);
-      if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
-
-      const producto = productos[i];
-      const existente = carrito.find(item => item.nombre === producto.nombre);
-      if (existente) {
-        existente.cantidad += cantidad;
-      } else {
-        carrito.push({ ...producto, cantidad });
-      }
-
-      // Vibración 50ms
       if (navigator.vibrate) navigator.vibrate(50);
-
+      const producto = productos[i];
+      const existente = carrito.find(p => p.nombre === producto.nombre);
+      if (existente) {
+        existente.cantidad += 1;
+      } else {
+        carrito.push({ ...producto, cantidad: 1 });
+      }
       actualizarCarrito();
     }
 
     function actualizarCarrito() {
       const items = document.getElementById("items");
+      const toggle = document.getElementById("toggle-carrito");
       items.innerHTML = "";
       let total = 0;
       let cantidadTotal = 0;
-
       const categorias = {};
+
       carrito.forEach(p => {
         total += p.precio * p.cantidad;
         cantidadTotal += p.cantidad;
-
-        if (!categorias[p.categoria]) {
-          categorias[p.categoria] = [];
-        }
+        if (!categorias[p.categoria]) categorias[p.categoria] = [];
         categorias[p.categoria].push(p);
       });
 
       for (const cat in categorias) {
-        const h3 = document.createElement("h3");
-        h3.textContent = cat;
-        items.appendChild(h3);
+        const titulo = document.createElement("h3");
+        titulo.textContent = cat;
+        items.appendChild(titulo);
 
         categorias[cat].forEach(p => {
           const div = document.createElement("div");
-          div.innerHTML = `
-            ${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad}
-            <button onclick="eliminarPorNombre('${p.nombre}')">❌</button>
-          `;
+          div.innerHTML = `${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad} <button onclick="eliminarPorNombre('${p.nombre}')">❌</button>`;
           items.appendChild(div);
         });
       }
 
       document.getElementById("total").textContent = total;
-      actualizarBotonFlotante(cantidadTotal);
-    }
-
-    function actualizarBotonFlotante(cantidad) {
-      const boton = document.getElementById("toggle-carrito");
-      boton.textContent = `🛒 (${cantidad})`;
-      boton.classList.add("animar");
-      setTimeout(() => boton.classList.remove("animar"), 600);
+      toggle.textContent = `🛒 (${cantidadTotal})`;
+      toggle.classList.add("animar");
+      setTimeout(() => toggle.classList.remove("animar"), 600);
     }
 
     function eliminarPorNombre(nombre) {
@@ -325,33 +265,65 @@
     }
 
     function finalizarCompra() {
-      if (carrito.length === 0) {
-        alert("El carrito está vacío.");
-        return;
-      }
+      const texto = encodeURIComponent("Hola, quiero hacer un pedido:\n" + carrito.map(p => `${p.nombre} x${p.cantidad} - $${p.precio * p.cantidad}`).join("\n") + `\nTotal: $${carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0)}`);
+      window.open(`https://wa.me/5493492247741?text=${texto}`);
+      vaciarCarrito();
+      toggleCarrito();
+    }
 
-      let mensaje = "*¡Hola! Quiero hacer un pedido:*\n\n";
-      carrito.forEach(p => {
-        mensaje += `• ${p.nombre} x${p.cantidad} = $${p.precio * p.cantidad}\n`;
+    function mostrarProductos() {
+      const contenedor = document.getElementById("productos");
+      const categorias = {};
+      productos.forEach((p, i) => {
+        if (!categorias[p.categoria]) categorias[p.categoria] = [];
+        categorias[p.categoria].push({ ...p, index: i });
       });
 
-      let total = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
-      mensaje += `\n*Total: $${total}*`;
+      for (const cat in categorias) {
+        const titulo = document.createElement("h3");
+        titulo.textContent = cat;
+        contenedor.appendChild(titulo);
 
-      const telefono = "5493492247741"; // Reemplazá por tu número
-      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-      window.open(url, "_blank");
+        const fila = document.createElement("div");
+        fila.className = "categoria-productos";
+
+        categorias[cat].forEach(p => {
+          const div = document.createElement("div");
+          div.className = "producto";
+          div.innerHTML = `<strong>${p.nombre}</strong><br>Precio: $${p.precio}<br><button onclick="agregar(${p.index})">Agregar</button>`;
+          fila.appendChild(div);
+        });
+
+        contenedor.appendChild(fila);
+      }
     }
 
     function filtrarProductos() {
-      const texto = document.getElementById("buscador").value;
-      mostrarProductos(texto);
+      const filtro = document.getElementById("buscador").value.toLowerCase();
+      const contenedor = document.getElementById("productos");
+      contenedor.innerHTML = "";
+      productos
+        .map((p, i) => ({ ...p, index: i }))
+        .filter(p => p.nombre.toLowerCase().includes(filtro))
+        .forEach(p => {
+          const div = document.createElement("div");
+          div.className = "producto";
+          div.innerHTML = `<strong>${p.nombre}</strong><br>Precio: $${p.precio}<br><button onclick="agregar(${p.index})">Agregar</button>`;
+          contenedor.appendChild(div);
+        });
     }
 
-    function toggleCarrito() {
+    document.addEventListener("click", function(event) {
       const carritoDiv = document.getElementById("carrito");
-      carritoDiv.style.display = carritoDiv.style.display === "none" ? "block" : "none";
-    }
+      const botonToggle = document.getElementById("toggle-carrito");
+      if (
+        carritoDiv.style.display === "block" &&
+        !carritoDiv.contains(event.target) &&
+        !botonToggle.contains(event.target)
+      ) {
+        carritoDiv.style.display = "none";
+      }
+    });
 
     mostrarProductos();
   </script>
