@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Liquid Vice - Carrito</title>
   <style>
     body {
@@ -60,14 +60,21 @@
       background-color: #34495e;
     }
 
+    /* Carrito fijo arriba a la derecha y compacto */
     .carrito {
+      position: fixed;
+      top: 60px;
+      right: 15px;
+      width: 90%;
+      max-width: 320px;
+      max-height: 70vh;
+      overflow-y: auto;
       background: white;
       padding: 20px;
-      margin: 20px auto;
-      max-width: 500px;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
       border-radius: 10px;
       display: none;
+      z-index: 1000;
     }
 
     .total {
@@ -90,6 +97,7 @@
     }
 
     #productos {
+      margin-top: 100px;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -132,17 +140,40 @@
       font-size: 16px;
       cursor: pointer;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-      z-index: 999;
+      z-index: 1100;
     }
 
     #toggle-carrito:hover {
       background: #219150;
     }
+
+    /* Responsivo para móviles */
+    @media (max-width: 480px) {
+      .carrito {
+        width: 95%;
+        right: 2.5%;
+        top: 65px;
+        padding: 15px;
+        font-size: 14px;
+      }
+
+      #toggle-carrito {
+        padding: 10px 14px;
+        font-size: 14px;
+      }
+
+      .producto {
+        width: 90%;
+      }
+
+      .producto input {
+        width: 50px;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Botón flotante 🛒 -->
   <button id="toggle-carrito" onclick="toggleCarrito()">🛒 (0)</button>
 
   <h1>Liquid Vice</h1>
@@ -161,30 +192,30 @@
 
   <script>
     const productos = [
-      { nombre: "Speed xl 500ml", precio: 150, categoria: "ENERGIZANTES" },
-      { nombre: "Speed xl 500ml x6", precio: 850, categoria: "ENERGIZANTES" },
-      { nombre: "Sprite 1.75L", precio: 300, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 2.25L", precio: 350, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 2.25L 2 unidades", precio: 700, categoria: "GASEOSAS" },
-      { nombre: "Sprite 1.75L 2 unidades", precio: 600, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 1.5L", precio: 280, categoria: "GASEOSAS" },
-      { nombre: "Coca cola 1.5L 2 unidades", precio: 560, categoria: "GASEOSAS" },
-      { nombre: "Paso De Los Toros 1.5L", precio: 250, categoria: "GASEOSAS" },
-      { nombre: "Paso De Los Toros 1.5L 2 unidades", precio: 500, categoria: "GASEOSAS" },
-      { nombre: "Botella Fernet Branca 750ml", precio: 1400, categoria: "APERITIVOS" },
-      { nombre: "Botella Gancia 1L", precio: 1000, categoria: "APERITIVOS" },
-      { nombre: "Fernet Branca 750ml & Botella Gancia 1L", precio: 2300, categoria: "APERITIVOS" },
-      { nombre: "Fernet Branca 750ml 2 Unidades", precio: 2800, categoria: "APERITIVOS" },
-      { nombre: "SKYY 750ml", precio: 1600, categoria: "VODKA" },
-      { nombre: "Smirnoff Raspberry 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Smirnoff Green Apple 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Smirnoff Watermelon 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Smirnoff Tropical Fruits 750ml", precio: 1500, categoria: "VODKA" },
-      { nombre: "Gin Heredero 700ml", precio: 1300, categoria: "GIN" },
-      { nombre: "Gin Bombay 750ml", precio: 1900, categoria: "GIN" },
-      { nombre: "Baggio Multifruta 1L", precio: 250, categoria: "JUGOS" },
-      { nombre: "Baggio Naranja 1L", precio: 250, categoria: "JUGOS" },
-      { nombre: "Baggio Durazno 1L", precio: 250, categoria: "JUGOS" }
+      { nombre: "Speed xl 500ml", precio: 1950, categoria: "ENERGIZANTES" },
+      { nombre: "Speed xl 500ml x6", precio: 9750, categoria: "ENERGIZANTES" },
+      { nombre: "Sprite 1.75L", precio: 2000, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 2.25L", precio: 3200, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 2.25L 2 unidades", precio: 6000, categoria: "GASEOSAS" },
+      { nombre: "Sprite 1.75L 2 unidades", precio: 3800, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 1.5L", precio: 2200, categoria: "GASEOSAS" },
+      { nombre: "Coca cola 1.5L 2 unidades", precio: 4000, categoria: "GASEOSAS" },
+      { nombre: "Paso De Los Toros 1.5L", precio: 2100, categoria: "GASEOSAS" },
+      { nombre: "Paso De Los Toros 1.5L 2 unidades", precio: 4000, categoria: "GASEOSAS" },
+      { nombre: "Botella Fernet Branca 750ml", precio: 10200, categoria: "APERITIVOS" },
+      { nombre: "Botella Gancia 1L", precio: 6000, categoria: "APERITIVOS" },
+      { nombre: "Fernet Branca 750ml & Botella Gancia 1L", precio: 15700, categoria: "APERITIVOS" },
+      { nombre: "Fernet Branca 750ml 2 Unidades", precio: 18000, categoria: "APERITIVOS" },
+      { nombre: "SKYY 750ml", precio: 5900, categoria: "VODKA" },
+      { nombre: "Smirnoff Raspberry 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Smirnoff Green Apple 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Smirnoff Watermelon 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Smirnoff Tropical Fruits 750ml", precio: 7000, categoria: "VODKA" },
+      { nombre: "Gin Heredero 700ml", precio: 10500, categoria: "GIN" },
+      { nombre: "Gin Bombay 750ml", precio: 23000, categoria: "GIN" },
+      { nombre: "Baggio Multifruta 1L", precio: 1350, categoria: "JUGOS" },
+      { nombre: "Baggio Naranja 1L", precio: 1350, categoria: "JUGOS" },
+      { nombre: "Baggio Durazno 1L", precio: 1350, categoria: "JUGOS" }
     ];
 
     const carrito = [];
@@ -320,7 +351,7 @@
       let total = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
       mensaje += `\n*Total: $${total}*`;
 
-      const telefono = "5491123456789"; // Reemplazalo con tu número real
+      const telefono = "5493492247741";
       const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
 
       window.open(url, "_blank");
@@ -333,7 +364,7 @@
 
     function toggleCarrito() {
       const carritoDiv = document.getElementById("carrito");
-      carritoDiv.style.display = carritoDiv.style.display === "none" ? "block" : "none";
+      carritoDiv.style.display = carritoDiv.style.display === "none" || carritoDiv.style.display === "" ? "block" : "none";
     }
 
     mostrarProductos();
